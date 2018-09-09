@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.matrix.lancamento.error.NaoEncontradoExcecao;
+import br.com.matrix.lancamento.model.Categoria;
+import br.com.matrix.lancamento.model.Empresa;
 import br.com.matrix.lancamento.model.Lancamento;
 import br.com.matrix.lancamento.repository.LancamentoRepository;
 
@@ -18,6 +20,11 @@ public class LancamentoService {
 	
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
+	
+	@Autowired
+	private EmpresaService empresaService;
+	@Autowired
+	private CategoriaService categoriaService;
 	
 	public void verificarLancamentoExiste(Long id) {
 		if (lancamentoRepository.existsById(id) == false)
@@ -34,5 +41,27 @@ public class LancamentoService {
 		BigDecimal total = result.stream().reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, RoundingMode.HALF_UP);
 		return total;
 		
+	}
+	
+	public List<Lancamento> listarLancamentoPorVencimento(LocalDate dtInicio, LocalDate dtFim) {
+		return lancamentoRepository.findByVencimentoBetween(dtInicio, dtFim);
+	}
+	
+	public Lancamento cadastrar(Long idEmpresa, Long idCategoria, Lancamento lancamento) {
+		Empresa empresa = empresaService.findById(idEmpresa);
+		Categoria categoria = categoriaService.findById(idCategoria);
+		lancamento.setEmpresa(empresa);
+		lancamento.setCategoria(categoria);
+		return lancamentoRepository.save(lancamento);
+	}
+	
+	public void remover(Long id) {
+		verificarLancamentoExiste(id);
+		lancamentoRepository.deleteById(id);
+	}
+	
+	public void atualizar(Lancamento lancamento) {
+		verificarLancamentoExiste(lancamento.getId());
+		lancamentoRepository.save(lancamento);
 	}
 }

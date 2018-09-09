@@ -7,26 +7,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class Lancamento {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
+	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
 	@ManyToOne
+	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
 	private String tipo;
 	private LocalDate vencimento;
 	private BigDecimal valor;
-	
 	
 }

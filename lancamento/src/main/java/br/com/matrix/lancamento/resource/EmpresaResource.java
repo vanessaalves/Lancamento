@@ -34,31 +34,28 @@ public class EmpresaResource {
 	
 	@GetMapping(path = "/pesquisarPorNome/{nome}")
 	public ResponseEntity<?> pesquisarPorNome(@PathVariable String nome) {
-		return new ResponseEntity<>(empresaRepository.findByNomeIgnoreCaseContaining(nome), HttpStatus.OK);
+		return new ResponseEntity<>(empresaService.pesquisarPorNome(nome), HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/pesquisarPorCNPJ/{cnpj}")
-	public ResponseEntity<?> pesquisarPorCNPJ(@PathVariable String cnpj) {
-		return new ResponseEntity<>(empresaRepository.findByCnpj(cnpj), HttpStatus.OK);
+	@GetMapping(path = "/pesquisarPorCnpj/{cnpj}")
+	public ResponseEntity<?> pesquisarPorCnpj(@PathVariable String cnpj) {
+		return new ResponseEntity<>(empresaService.pesquisarPorCnpj(cnpj), HttpStatus.OK);
 	}
 	
 	@PostMapping
 	public ResponseEntity<?> cadastrar(@Valid @RequestBody Empresa empresa) {
-		empresaService.verificarEmpresaDuplicada(empresa);
-		return new ResponseEntity<>(empresaRepository.save(empresa), HttpStatus.CREATED);
+		return new ResponseEntity<>(empresaService.cadastrar(empresa), HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<?> remover(@PathVariable("id") Long id) {
-		empresaService.verificarEmpresaExiste(id);
-		empresaRepository.deleteById(id);
+		empresaService.remover(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PutMapping
 	public ResponseEntity<?> atualizar(@RequestBody Empresa empresa) {
-		empresaService.verificarEmpresaExiste(empresa.getId());
-		empresaRepository.save(empresa);
+		empresaService.atualizar(empresa);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

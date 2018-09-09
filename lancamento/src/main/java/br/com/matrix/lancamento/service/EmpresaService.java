@@ -1,5 +1,9 @@
 package br.com.matrix.lancamento.service;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +24,34 @@ public class EmpresaService {
 	public void verificarEmpresaDuplicada(Empresa empresa) {
 		if (!empresaRepository.findByCnpj(empresa.getCnpj()).isEmpty())
 			throw new IllegalArgumentException("Essa empresa já está cadastrada");
+	}
+	
+	public List<Empresa> pesquisarPorNome(String nome) {
+		return empresaRepository.findByNomeIgnoreCaseContaining(nome);
+	}
+	
+	public List<Empresa> pesquisarPorCnpj(String cnpj) {
+		return empresaRepository.findByCnpj(cnpj);
+	}
+	public Empresa cadastrar(@Valid Empresa empresa) {
+		verificarEmpresaDuplicada(empresa);
+		return empresaRepository.save(empresa);
+	}
+	
+	public void remover(Long id) {
+		verificarEmpresaExiste(id);
+		empresaRepository.deleteById(id);
+		
+	}
+	
+	public void atualizar(Empresa empresa) {
+		verificarEmpresaExiste(empresa.getId());
+		 empresaRepository.save(empresa);
+		
+	}
+
+	public Empresa findById(Long idEmpresa) {
+		return empresaRepository.findById(idEmpresa).get();
 	}
 	
 }

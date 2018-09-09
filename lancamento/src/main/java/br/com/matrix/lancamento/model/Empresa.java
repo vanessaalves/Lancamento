@@ -1,11 +1,13 @@
 package br.com.matrix.lancamento.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.br.CNPJ;
 
 import lombok.Data;
 
@@ -14,14 +16,15 @@ import lombok.Data;
 
 public class Empresa {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotEmpty(message = "Nome não pode ser vazio")
 	private String nome;
 	
 	@NotEmpty(message = "CNPJ não pode ser vazio")
-	@Size(max = 14, message = "CNPJ precisa ter até 14 caracteres")
+	@Column(length = 14)
+	@CNPJ
 	private String cnpj;
 	private String nomeResponsavel;
 	private String contato;
